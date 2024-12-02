@@ -15,7 +15,6 @@ def detect_emotion(frame, detector_backend="mtcnn", enforce_detection=True):
             x, y, width, height = region["x"], region["y"], region["w"], region["h"]
             dominant_emotion = face["dominant_emotion"]
 
-            # Draw rectangle around the face and label emotion
             cv2.rectangle(frame, (x, y), (x + width, y + height), (0, 255, 0), 2)
             cv2.putText(
                 frame,
