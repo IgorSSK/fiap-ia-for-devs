@@ -3,6 +3,8 @@ import numpy as np
 from tqdm import tqdm
 from emotion_analysis.emotion_detection import detect_emotion
 from activity_detection.activity_classification import detect_activity
+from summary_generation.summary_creator import create_summary
+
 
 def detect_faces(video_path, output_path, report_output, frame_skip=2):
     """Process video frames for face and activity detection."""
@@ -21,6 +23,7 @@ def detect_faces(video_path, output_path, report_output, frame_skip=2):
     processed_frames = 0
     anomaly_count = 0
     last_landmarks = None
+    log_detections = ""
 
     for _ in tqdm(range(frame_count)):
         ret, frame = cap.read()
@@ -28,24 +31,29 @@ def detect_faces(video_path, output_path, report_output, frame_skip=2):
             break
 
         if frame_number % frame_skip == 0:
-            frame = detect_emotion(frame)
+            frame, emotion = detect_emotion(frame)
 
-            frame, anomalies, last_landmarks = detect_activity(frame, last_landmarks)
-            anomaly_count += anomalies
+            frame, activity = detect_activity(frame, processed_frames, anomaly_count)
 
             processed_frames += 1
+
+            log_detections += f"Emotion: {emotion}, Activity: {activity}\n"
 
             if frame is None:
                 print(f"Warning: Frame {frame_number} is None. Skipping...")
                 continue
 
             if not isinstance(frame, (np.ndarray)) or frame.dtype != np.uint8:
-                print(f"Error: Frame {frame_number} is not a valid uint8 numpy array. Skipping...")
+                print(
+                    f"Error: Frame {frame_number} is not a valid uint8 numpy array. Skipping..."
+                )
                 continue
 
             out.write(frame)
 
         frame_number += 1
+
+    create_summary(log_detections, report_output)
 
     cap.release()
     out.release()
