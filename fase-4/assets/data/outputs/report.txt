@@ -1,0 +1,2 @@
+Total frames processed: 676
+Total anomalies detected: 3172
