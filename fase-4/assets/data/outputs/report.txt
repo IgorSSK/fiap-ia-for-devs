@@ -1,0 +1,3 @@
+Summary: Emotions: Unknown, fear, angry, happy, neutral, surprise, sad. Activities: Unknown activity, No pose detected, Raising arms, Walking, Jumping.
+Anomalies detected: 0
+Total frames analyzed: 1500
